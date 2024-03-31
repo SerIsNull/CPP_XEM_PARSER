@@ -42,7 +42,7 @@ else()
 	add_subdirectory( doc )
 
 # add submodule "gtest" into the project
-	add_executable( third-party )
+	add_subdirectory( third-party )
 
 # add testing in this project. Before building
 	enable_testing()

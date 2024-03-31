@@ -33,9 +33,6 @@ add_executable( xem_parser ${SOURCES} ${HEADERS} )
 			    ${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
-# set path for include
-	target_include_directories( xem_parser PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
 
 # Build the xem_pareser and test running
 if ( (EXISTS ${COMP} ) AND ( EXISTS ${PIC} ) )

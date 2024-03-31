@@ -1,53 +1,86 @@
-# this CMakeLists.txt for setting common parameters in this project
-
-# set vesrion of cmake
-cmake_minimum_required( VERSION 3.16.3 )
-
-# set policy
-	cmake_policy( VERSION 3.16.3 )
-
+# this CMakeLists.txt for testing xem_parser.
 
 # set name, version, description and language for programming
-	project( xem_parser
-	 	VERSION 0.0.3
-		DESCRIPTION "This is parser for getting all the necessary composites and tags from the picture of SCADA"
-	 	LANGUAGES CXX
-	 )
+	project( tester
+	 	 VERSION 0.0.3
+		 DESCRIPTION "This is test for testing xem_parser"
+	 	 LANGUAGES CXX
+	)
 
-# for build you'll need to have c++20
-	set( CMAKE_CXX_STANDARD 20 )
+# set source files
+	set( SOURCES
+		xem_parser.cpp
+		test_xem_parser.cpp
+	)
 
-	set( CMAKE_CXX_STANDARD_REQUIRED ON )
+# set header files
+	set( HEADERS 
+		xem_pareser.hpp	
+		test_xem_parser.hpp
+	)
+
+# get the names of input files. It's about /test/valid_pic_filtered.XEM with data for parsing and /test/valid_composites.txt.txt.
+# Actually, it's about the result file.txt
+	file( GLOB VALID_PIC  valid*.XEM            )
+	file( GLOB VALID_COMP valid*.txt.txt        )
+	set ( F_RESULT ${CMAKE_BINARY_DIR}/f_result.txt)
+
+# For testing we need one more input files. It untill doesn't exist. For generate it we need to get their names.
+	STRING( REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/valid" "${CMAKE_BINARY_DIR}/empty" EMPTY_PIC  ${VALID_PIC}  )
+	STRING( REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/valid" "${CMAKE_BINARY_DIR}/empty" EMPTY_COMP ${VALID_COMP} )
 
 
-# set flags of compiler
-	set( CMAKE_CXX_COMPILE_FLAGS ${CMAKE_CXX_COMPILE_FLAGS} -Wall -Wextra)
+# We try ti create all the necessary files
+	add_custom_target( creating_some_files_for_test 
+			   COMMAND touch "${EMPTY_PIC}" "${EMPTY_COMP}" "${F_RESULT}"
+			   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+			   COMMENT "===> CREATING SOME INPUT FILES FOR RUNNING THE TEST!"
+			   VERBATIM
+	)
 
-# set dir for resulting files like /build/bin/
-	set( CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" )
+file( GLOB EMPTY_PIC  ${CMAKE_BINARY_DIR}/empty*.XEM       )
+file( GLOB EMPTY_COMP ${CMAKE_BINARY_DIR}/empty*.txt.txt   )
+#file( GLOB F_RESULT   f_res*.txt       )
 
-# so, in the src/CmakeLists.txt I used some system programm sucha as "grep" and "awk".
-# if this OS doesn't have theese programms that building will be failed!
-find_program( is_exist_grep    grep    )
-find_program( is_exist_awk     awk     )
-find_program( is_exist_touch   touch   )
+message( "EMPTIES == " ${EMPTY_PIC} " and " ${EMPTY_COMP} " and " ${F_RESULT} )
 
-if( NOT (is_exist_grep AND is_exist_awk AND is_exist_touch) )
+message( "VALID == " ${VALID_PIC} " and " ${VALID_COMP} )
+# build the test  
+add_executable ( test_xem_parser ${CMAKE_SOURCE_DIR}/src/${SOURCES} )
 
-	message( FATAL_ERROR " ===> NOT FOUND THE PROGRAMMS : " ${is_exist_grep} " , " ${is_exist_awk} ", " ${is_exist_touch} " in the OS! ")
+# we need to create all the necessary files for testing before building and running the test.
+	add_dependencies( test_xem_parser creating_some_files_for_test )
 
-else()
-	message( "===> FOUND THE PROGRAMMS : " ${is_exist_grep} " , " ${is_exist_awk} ", " ${is_exist_touch} " in the OS! ")
-	
-	add_subdirectory( doc )
+# add paths for # include
+	target_include_directories( test_xem_parser PRIVATE "${CMAKE_SOURCE_DIR}/src" "${CMAKE_CURRENT_SOURCE_DIR}")
 
-# add testing in this project. Before building
-	enable_testing()
+# set output path for test
+	set_target_properties( test_xem_parser PROPERTIES
+			       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+	)
 
-	add_subdirectory( test )
 
-# add srs in this project. If the test PASSED - try to build out xem_paresr
-	add_subdirectory( src )
+# add option -pthread for linker
+	target_link_options ( test_xem_parser PRIVATE
+	              	      -pthread 
+	)
 
-endif()
+# link it with gtest library
+	target_link_libraries( test_xem_parser
+		               gtest
+	)
+
+# add the tests_xem_parser into the ctest programm
+	add_test  ( NAME tests_xem_parser
+	    	    COMMAND ${CMAKE_BINARY_DIR}/bin/test_xem_parser "${VALID_PIC}" "${VALID_COMP}" "${EMPTY_PIC}" "${EMPTY_COMP}" "./NOT_EXISTS_PIC.XEM" "./NOT_EXISTS_COMP.txt.txt" "${F_RESULT}" 
+        )
+
+# Run the test before building the xem_parser. If this test will be fails - the building won't be started!
+	add_custom_command( TARGET test_xem_parser
+	            	    POST_BUILD
+	    	    	    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure 
+		    	    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+		    	    COMMENT "===> RUN THE TEST BEFORE BUILDING XEM_PARSER!"
+		    	    VERBATIM
+)
 
