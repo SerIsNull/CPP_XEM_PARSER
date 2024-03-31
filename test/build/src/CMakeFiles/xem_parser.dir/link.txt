@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/xem_parser.dir/xem_parser.cpp.o CMakeFiles/xem_parser.dir/client.cpp.o  -o ../bin/xem_parser 
