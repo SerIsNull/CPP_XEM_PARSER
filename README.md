@@ -3,12 +3,26 @@
 **How to use it?**
 
 ***Build***
-- First of all you need to have some programms in your OS such as touch, grep and awk programms. These programms are necessary for building.
+- First of all you need to have some programms in your OS such as touch, grep and awk. These programms are necessary for building.
 - The doxygen isn't required but if you want to generate documentation you need to have it too.
 - Actually, you'll nedd to have 2 input files. The first file is a pic.XEM (SCADA) and the second file is a list.txt.txt (composites for getting ).
-- So,iIf you're a lazy man=) you can trust Cmake this checking. If this checking will be successful, you'll get this output:
+- After that you need to create the build directory and change it:
+```
+mkdir ./build && cd ./build
+```
+- You need to run cmake in the creating /build directory for generating some files for building. You can do it using cmd:
+```
+cmake ..
+```
+- CMake will start checking that all the necessary files are exists. If you'll see this message you're on the right way:
+![image](https://github.com/SerIsNull/CPP_XEM_PARSER/assets/124979388/f37771b1-57a6-4d61-8948-8c05f343476c)
 
-![image](https://github.com/SerIsNull/CPP_XEM_PARSER/assets/124979388/39f40764-7809-4afe-8249-f8834ccbfe3e)
+- After the generating necessary files you can try to build this project:
+```
+cmake --build .
+```
+
+- Afret that you'll need to change directory
 
 - First of all you need to create the build directory. You can do it using cmd :
 
@@ -23,7 +37,19 @@ cmake ..
 ```
 cmake --build .
 ```
-- In the end you'll get two files in the /build/bin directory:
+![image](https://github.com/SerIsNull/CPP_XEM_PARSER/assets/124979388/81225d3b-51e3-4d67-8448-c74d6b7bff5b)
+
+***Run***
+- So, as you understood, after the building xem_parser it runs with input parameters.
+- After the running the result file of parsing saved into /build/results.txt.
+- You can run it manually but I don't recommend you because the first input file.XEM ( picture of the SCADA-system ) generates into /src/CMakeLists.txt with grep help.
+- The most easy way to run it is just put two input files into the root-directory of the project and run the build command.
+
+***Test***
+- The directory /test contains two input files for test.
+- Other input files for test will be generated before the building test.
+- The test runs before the building xem_parser. Therefore, if this test fails - the building xem_parser won't be completed:
+
 1) text_xem_parser - this is a test for xem_parser;
 2) xem_parser - this is a main programm.
 
