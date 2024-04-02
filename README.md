@@ -2,6 +2,12 @@
 
 **How to use it?**
 
+***Download***
+- For clone this project on your PC you need to use this command for getting submodule too:
+```
+git clone --recurse-submodules name-of-repo.git
+```
+
 ***Build***
 - First of all you need to have some programms in your OS such as touch, grep and awk. These programms are necessary for building.
 - The doxygen isn't required but if you want to generate documentation you need to have it too.
