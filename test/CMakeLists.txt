@@ -38,13 +38,7 @@
 			   VERBATIM
 	)
 
-file( GLOB EMPTY_PIC  ${CMAKE_BINARY_DIR}/empty*.XEM       )
-file( GLOB EMPTY_COMP ${CMAKE_BINARY_DIR}/empty*.txt.txt   )
-#file( GLOB F_RESULT   f_res*.txt       )
 
-message( "EMPTIES == " ${EMPTY_PIC} " and " ${EMPTY_COMP} " and " ${F_RESULT} )
-
-message( "VALID == " ${VALID_PIC} " and " ${VALID_COMP} )
 # build the test  
 add_executable ( test_xem_parser ${CMAKE_SOURCE_DIR}/src/${SOURCES} )
 

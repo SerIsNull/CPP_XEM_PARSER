@@ -8,7 +8,7 @@ file( GLOB CFG_FILE *.conf )
 
 if( DOXYGEN_FOUND AND ( EXISTS ${CFG_FILE} ) )
 	message("===> THE DOXYGEN AND CONFIGURATION WERE FOUND THEREFORE THE DECUMENTATION WILL BE GENERATED! USE: \"make generate_doc\" for it!")
-	add_custom_target( generate_docs
+	add_custom_target( generate_doc
 		           COMMAND ${DOXYGEN_EXECUTABLE} "${CFG_FILE}"
 			   WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/doc"
 			   COMMENT "===> GENERATE THE DOCUMENTATION!"

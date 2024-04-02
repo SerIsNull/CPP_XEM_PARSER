@@ -172,11 +172,6 @@ int main( int argc, char **argv) {
 /// for more details you can see ../test/CMaekLists.txt.
 /// I get these values from there.
 
-	for( std::size_t i{1}; i < 8; i++) {
-	
-		std::cout << "val = " << argv[i] << '\n';
-	}
-
 	test_xem_parser::pth_to_pic_filtered              = argv[1];
 	test_xem_parser::pth_to_find_composites           = argv[2];
 
